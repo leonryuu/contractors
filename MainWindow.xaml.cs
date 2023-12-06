@@ -22,6 +22,7 @@ namespace RecruitmentSystem
     {
         // Creating instances of ActiveJobs/EmployedContractors
         public EmployedContractors employedContractors = new EmployedContractors();
+        private ContractorManager contractorManager = new ContractorManager();
         public ActiveJobs activeJobs = new ActiveJobs();
 
 
@@ -37,39 +38,29 @@ namespace RecruitmentSystem
         public void AddContractor_buttonclick(object sender, RoutedEventArgs e)
         {
             // Get input data from the textboxes and date picker
-
             string firstName = Textbox_FirstName.Text;
             string lastName = Textbox_LastName.Text;
             DateTime startDate = DatePicker_StartDate.SelectedDate ?? DateTime.Now;
-
-            // TryParse the inputted to value to ensure it is a decimal
-
-             if (decimal.TryParse(Textbox_HourlyWage.Text, out decimal hourlyWage))
-             {
-                // Create the new contractor
-                Contractor contractor = new Contractor(firstName, lastName, startDate, hourlyWage);
-
-
-                // Add the contractor to the list
-                employedContractors.AddContractor(contractor);
-
-                // Add the contractor to the ComboBox
-                Contractor_Assigned.Items.Add(contractor);
-
-                // Message to show that contractor is added
-                MessageBox.Show("Contractor added successfully. Please refresh Get Contractors.");
-
-                // clear the input fields
-                Textbox_FirstName.Text = "Enter First Name";
-                Textbox_LastName.Text = "Enter Last Name";
-                Textbox_HourlyWage.Text = "Enter Hourly Wage";
-                DatePicker_StartDate.SelectedDate = null; // Reset the date picker
-             }
-            else
+            if (!decimal.TryParse(Textbox_HourlyWage.Text, out decimal hourlyWage))
             {
                 // Handle error where wage is not a numerical value
                 MessageBox.Show("Please enter numerical values for wage.");
+                return;
             }
+
+            contractorManager.AddContractor(firstName, lastName, startDate, hourlyWage);
+
+            // Add the contractor to the ComboBox
+            Contractor_Assigned.Items.Add(contractor);
+
+            // Message to show that contractor is added
+            MessageBox.Show("Contractor added successfully. Please refresh Get Contractors.");
+
+            // clear the input fields
+            Textbox_FirstName.Text = "Enter First Name";
+            Textbox_LastName.Text = "Enter Last Name";
+            Textbox_HourlyWage.Text = "Enter Hourly Wage";
+            DatePicker_StartDate.SelectedDate = null; // Reset the date picker
         }
 
 
@@ -153,7 +144,7 @@ namespace RecruitmentSystem
         {
             Jobs_display.Items.Clear();
 
-            
+
             // Retrieve list of jobs where the assigned contractor is equal to null
 
             var unassignedJobs = activeJobs.GetJobs().Where(job => job.ContractorAssigned == null);
@@ -181,7 +172,6 @@ namespace RecruitmentSystem
 
         public void AddJob(object sender, RoutedEventArgs e)
         {
-            
             // Get input data from the textboxes and date picker
             string jobName = Textbox_JobName.Text;
             string cost = Textbox_Cost.Text;
@@ -403,7 +393,7 @@ namespace RecruitmentSystem
                     Jobs_display.Items.Add(listBoxItem);
                 }
             }
-            
+
             else
             {
                 // Handle invalid input

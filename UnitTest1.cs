@@ -9,6 +9,18 @@ namespace MSTest_Test_Project
     [TestClass]
     public class UnitTest1
     {
+
+        private ContractorManager contractorManager;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            // Perform setup tasks here that you want to run before each test method
+            // This method will be called before every test method in this test class
+
+            contractorManager = new ContractorManager();
+        }
+
         [TestMethod]
         public void TestAddContractor_buttonclick2()
         {
@@ -43,25 +55,18 @@ namespace MSTest_Test_Project
             thread.Join();
         }
 
-        
+
         public void JAMES_TestAddContractor_buttonclick()
         {
             // Arrange
-            MainWindow mainWindow = new MainWindow();
-
-            // Set input values
-            mainWindow.Textbox_FirstName.Text = "Bob";
-            mainWindow.Textbox_LastName.Text = "Smith";
-            mainWindow.DatePicker_StartDate.SelectedDate = new DateTime(2023, 11, 25);
-            mainWindow.Textbox_HourlyWage.Text = "25";
+            Contractor contractor = new Contractor("David", "Do", new DateTime(2023, 1, 1), 100M)
 
             // Act
-            mainWindow.AddContractor_buttonclick(null, null);
+            contractorManager.AddContractor("david", "do", new DateTime(), 100.1);
 
             // Assert
             var contractors = mainWindow.employedContractors.GetContractors();
-
-            Assert.IsTrue(contractors.Count > 0);
+            Assert.AreEqual(contractors[0], contractor)
         }
 
         [TestMethod]
@@ -97,7 +102,7 @@ namespace MSTest_Test_Project
             thread.Join();
         }
 
-      
+
         public void TestCompleteJob()
         {
             // Arrange
@@ -143,7 +148,7 @@ namespace MSTest_Test_Project
             thread.Join();
         }
 
-   
+
         public void TestAddContractorAndRemove()
         {
             Thread thread = new Thread(() =>
